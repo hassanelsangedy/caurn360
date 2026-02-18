@@ -1,0 +1,127 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// User model linked to Clerk authentication
+model User {
+  id        String   @id @default(uuid())
+  clerkId   String   @unique
+  email     String?  @unique
+  name      String?
+  role      UserRole @default(ASSOCIADO)
+  
+  // Relations
+  patientProfile PatientProfile?
+  doctorProfile  DoctorProfile?
+  managerProfile ManagerProfile?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum UserRole {
+  ASSOCIADO // Patient/Associate
+  MEDICO    // Doctor/Professional
+  GESTOR    // Manager/Admin
+}
+
+// Patient Profile based on 'Avaliação Multidimensional do Idoso' concepts
+model PatientProfile {
+  id        String   @id @default(uuid())
+  userId    String   @unique
+  user      User     @relation(fields: [userId], references: [id])
+  
+  // Basic Info
+  cpf       String   @unique
+  birthDate DateTime
+  gender    String?
+  phone     String?
+  address   String?
+
+  // Risk Classification (Metodologia de Faixas do Projeto Evoque)
+  riskScore Float?      // Numeric calculated score
+  riskLevel RiskLevel?  // Derived classification
+  
+  // Medical Data & Assessments
+  assessments Assessment[]
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Indexes optimized for searches by CPF and Risk Score
+  @@index([cpf])
+  @@index([riskScore])
+  @@index([riskLevel])
+}
+
+enum RiskLevel {
+  VERDE     // Green: Low Risk / Robust
+  AMARELA   // Yellow: Moderate Risk / Pre-Frail
+  VERMELHA  // Red: High Risk / Frail
+}
+
+// Doctor/Professional Profile
+model DoctorProfile {
+  id        String   @id @default(uuid())
+  userId    String   @unique
+  user      User     @relation(fields: [userId], references: [id])
+  crm       String?  @unique
+  specialty String?
+  
+  assessmentsConducted Assessment[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// Manager Profile
+model ManagerProfile {
+  id        String   @id @default(uuid())
+  userId    String   @unique
+  user      User     @relation(fields: [userId], references: [id])
+  department String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// Assessment Record (Avaliação Multidimensional)
+model Assessment {
+  id        String   @id @default(uuid())
+  patientId String
+  patient   PatientProfile @relation(fields: [patientId], references: [id])
+  
+  doctorId  String?
+  doctor    DoctorProfile? @relation(fields: [doctorId], references: [id])
+
+  type      AssessmentType
+  date      DateTime
+
+  // Detailed scores stored as specific fields or JSON for flexibility
+  functionalScore Float? // e.g., Katz, Lawton
+  mentalScore     Float? // e.g., MMSE
+  socialScore     Float? // e.g., Social Support Scale
+  
+  // Comprehensive assessment details
+  details   Json?   // Stores granular answers (e.g., specific question responses)
+
+  conclusion String? // Physician's notes or auto-generated summary
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([patientId])
+  @@index([date])
+}
+
+enum AssessmentType {
+  AMI_INITIAL   // Initial Multidimensional Assessment
+  AMI_FOLLOWUP  // Follow-up
+  EVOQUE_CHECK  // Specific Evoque Methodology Check
+  OTHER
+}
