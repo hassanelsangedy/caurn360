@@ -33,7 +33,7 @@ export function GameMap() {
         Using placehold.co for now, replace /assets/mario/dinosaur-land.png in production
       */}
             <Image
-                src="/assets/mario/dinosaur-land.png" // User should provide this asset
+                src="/assets/game/map-bg.png"
                 alt="Mapa da Jornada CAURN"
                 fill
                 className="object-cover"
@@ -106,15 +106,25 @@ export function GameMap() {
                 style={{ transform: 'translate(-50%, -100%)' }} // Anchor at bottom center (feet)
             >
                 {/* Avatar Sprite Placeholder */}
-                <div className="w-full h-full bg-red-500 rounded-full border-2 border-white shadow-xl flex items-center justify-center text-[8px] font-bold text-white">
-                    VOCÊ
-                </div>
+                <Image
+                    src="/assets/mario/avatar.svg"
+                    alt="Avatar"
+                    width={48}
+                    height={48}
+                    className="drop-shadow-lg"
+                />
             </motion.div>
 
             {/* Action Block [?] */}
             <div className="absolute top-4 right-4 animate-bounce">
-                <button className="w-12 h-12 bg-yellow-400 border-b-4 border-r-4 border-yellow-600 rounded shadow-lg text-brown-900 font-bold text-2xl flex items-center justify-center hover:bg-yellow-300 active:border-0 active:translate-y-1 transition-all">
-                    ?
+                <button className="w-16 h-16 transition-transform active:scale-95">
+                    <Image
+                        src="/assets/mario/question-block.svg"
+                        alt="Bonus"
+                        width={64}
+                        height={64}
+                        className="drop-shadow-xl"
+                    />
                 </button>
             </div>
         </div>

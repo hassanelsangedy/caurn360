@@ -1,0 +1,19 @@
+<svg width="64" height="64" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+  <!-- Box -->
+  <rect x="0" y="0" width="64" height="64" fill="#FFD700" stroke="#B8860B" stroke-width="4"/>
+  
+  <!-- Question Mark -->
+  <path d="M20,18 Q32,4 44,18 Q46,28 36,36 L32,44" stroke="#8B4513" stroke-width="8" stroke-linecap="round" fill="none"/>
+  
+  <rect x="28" y="50" width="8" height="8" fill="#8B4513"/>
+  
+  <!-- Corner Shadows -->
+  <rect x="4" y="4" width="8" height="8" fill="#B8860B" opacity="0.3"/>
+  <rect x="52" y="4" width="8" height="8" fill="#B8860B" opacity="0.3"/>
+  <rect x="4" y="52" width="8" height="8" fill="#B8860B" opacity="0.3"/>
+  <rect x="52" y="52" width="8" height="8" fill="#B8860B" opacity="0.3"/>
+
+  <style>
+    rect, path { shape-rendering: crispEdges; }
+  </style>
+</svg>

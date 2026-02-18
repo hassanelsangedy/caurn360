@@ -1,0 +1,22 @@
+<svg width="64" height="64" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+  <!-- Body -->
+  <rect x="20" y="24" width="24" height="20" fill="#EA4335"/>
+  <rect x="16" y="44" width="8" height="12" fill="#0D47A1"/>
+  <rect x="40" y="44" width="8" height="12" fill="#0D47A1"/>
+  
+  <!-- Hat -->
+  <rect x="16" y="8" width="32" height="12" fill="#EA4335"/>
+  <rect x="40" y="8" width="8" height="8" fill="#FFFFFF"/>
+  
+  <!-- Face -->
+  <rect x="20" y="16" width="24" height="12" fill="#FFE0B2"/>
+  <rect x="24" y="20" width="4" height="4" fill="#000000"/>
+  <rect x="36" y="20" width="4" height="4" fill="#000000"/>
+  
+  <!-- Moustache -->
+  <rect x="24" y="26" width="16" height="4" fill="#000000"/>
+
+  <style>
+    rect { shape-rendering: crispEdges; }
+  </style>
+</svg>
