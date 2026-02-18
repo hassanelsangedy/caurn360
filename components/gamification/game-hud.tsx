@@ -1,8 +1,8 @@
-import { currentUser } from "@clerk/nextjs/server";
+interface GameHUDProps {
+    userName?: string;
+}
 
-export async function GameHUD() {
-    const user = await currentUser();
-    const userName = user?.firstName || "MARIO";
+export function GameHUD({ userName = "MARIO" }: GameHUDProps) {
 
     // Placeholder data - in real app, fetch from DB
     const lives = 5;

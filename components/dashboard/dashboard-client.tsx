@@ -78,7 +78,7 @@ export function DashboardClient({ user }: { user: any }) {
             <LevelTransition isTransitioning={isTransitioning} />
 
             {/* Retro HUD */}
-            <GameHUD />
+            <GameHUD userName={user.firstName} />
 
             <div className="max-w-5xl mx-auto px-4 space-y-8">
 
