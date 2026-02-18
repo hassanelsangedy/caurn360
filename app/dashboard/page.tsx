@@ -1,6 +1,7 @@
 import { currentUser } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import { MarioGamification } from "@/components/gamification/mario-level";
+import { OverworldMap } from "@/components/gamification/overworld-map";
 
 export default async function DashboardPage() {
     const user = await currentUser();
@@ -31,11 +32,9 @@ export default async function DashboardPage() {
                 </p>
             </div>
 
-            {/* Gamification Map */}
-            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-                <MarioGamification level={1} status="unlocked" />
-                <MarioGamification level={2} status="locked" />
-                <MarioGamification level={3} status="locked" />
+            {/* Gamification Map (Overworld) */}
+            <div className="w-full">
+                <OverworldMap />
             </div>
 
             {/* Action Prompt */}
