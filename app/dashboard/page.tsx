@@ -1,8 +1,10 @@
+```javascript
 import { currentUser } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import { MarioGamification } from "@/components/gamification/mario-level";
 import { OverworldMap } from "@/components/gamification/overworld-map";
 import { GameHUD } from "@/components/gamification/game-hud";
+import DashboardClient from "./dashboard-client"; // Assuming DashboardClient is in the same directory
 
 export default async function DashboardPage() {
     const user = await currentUser();
