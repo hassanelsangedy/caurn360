@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import Image from "next/image";
 import { motion } from "framer-motion";
 
 interface LevelNode {
@@ -13,98 +12,132 @@ interface LevelNode {
 }
 
 const levels: LevelNode[] = [
-    { id: 1, x: 20, y: 70, status: "current", label: "Start: Anamnese" },
-    { id: 2, x: 50, y: 50, status: "locked", label: "Level 2: Check-up" },
-    { id: 3, x: 80, y: 30, status: "locked", label: "Level 3: Metas" },
+    { id: 1, x: 25, y: 75, status: "current", label: "House" },     // Yoshi's House vibe
+    { id: 2, x: 45, y: 55, status: "locked", label: "Level 1" },    // First climb
+    { id: 3, x: 75, y: 35, status: "locked", label: "Castle" },     // Castle on hill
 ];
 
 export function OverworldMap() {
-    // Simple state to handle hydration/mounting animations
     const [mounted, setMounted] = useState(false);
 
     useEffect(() => {
         setMounted(true);
     }, []);
 
-    if (!mounted) return <div className="w-full h-96 bg-green-200 rounded-lg animate-pulse" />;
+    if (!mounted) return <div className="w-full h-[500px] bg-[#5C94FC] rounded-xl animate-pulse" />;
 
     return (
         <div className="relative w-full h-[500px] bg-[#5C94FC] rounded-xl overflow-hidden shadow-2xl border-4 border-yellow-400">
 
-            {/* --- Background Layers (Simulating Parallax/Depth) --- */}
+            {/* --- WATER ANIMATION --- */}
+            <div className="absolute inset-0 opacity-30 bg-[url('https://media.giphy.com/media/3o7aD2dLOma2iWWnF6/giphy.gif')] bg-repeat opacity-20" style={{ backgroundSize: '200px' }}></div>
 
-            {/* Far Background: Hills */}
-            <div className="absolute inset-0 opacity-80"
-                style={{
-                    backgroundImage: "url('/assets/gamification/mario-level-bg.png')",
-                    backgroundSize: "cover",
-                    backgroundPosition: "center bottom"
-                }}
-            />
+            {/* --- ISLAND LANDMASS (SVG) --- */}
+            {/* This SVG draws a shape resembling the starting island of SMW */}
+            <svg className="absolute inset-0 w-full h-full" preserveAspectRatio="none">
+                <defs>
+                    <pattern id="grassPattern" patternUnits="userSpaceOnUse" width="40" height="40" viewBox="0 0 10 10">
+                        <rect width="10" height="10" fill="#228B22" />
+                        <circle cx="2" cy="2" r="1" fill="#006400" opacity="0.4" />
+                        <circle cx="7" cy="7" r="1" fill="#006400" opacity="0.4" />
+                    </pattern>
+                </defs>
 
-            {/* Grid Pattern Overlay (Retro Feel) */}
-            <div className="absolute inset-0 bg-[url('https://transparenttextures.com/patterns/pixel-weave.png')] opacity-10 pointer-events-none"></div>
+                {/* The Island Shape */}
+                <path
+                    d="M -10,500 
+               L -10,400 
+               C 50,400 100,350 150,350 
+               S 250,300 300,300
+               S 400,200 500,200
+               S 700,100 800,100
+               L 1200,100
+               L 1200,500
+               Z"
+                    fill="url(#grassPattern)"
+                    stroke="#F8D878"
+                    strokeWidth="8"
+                    className="drop-shadow-xl"
+                />
 
-            {/* --- Map Paths (SVG Lines) --- */}
-            <svg className="absolute inset-0 w-full h-full pointer-events-none">
-                {/* Path from Level 1 to 2 */}
-                <line x1="20%" y1="70%" x2="50%" y2="50%" stroke="black" strokeWidth="8" strokeDasharray="10 5" className="opacity-40" />
-                <line x1="20%" y1="70%" x2="50%" y2="50%" stroke="#F8D878" strokeWidth="4" strokeDasharray="10 5" />
+                {/* Outline for the 'cliff' effect */}
+                <path
+                    d="M -10,500 
+               L -10,400 
+               C 50,400 100,350 150,350 
+               S 250,300 300,300
+               S 400,200 500,200
+               S 700,100 800,100
+               L 1200,100"
+                    fill="none"
+                    stroke="#006400"
+                    strokeWidth="4"
+                    opacity="0.5"
+                    transform="translate(0, 10)"
+                />
 
-                {/* Path from Level 2 to 3 */}
-                <line x1="50%" y1="50%" x2="80%" y2="30%" stroke="black" strokeWidth="8" strokeDasharray="10 5" className="opacity-40" />
-                <line x1="50%" y1="50%" x2="80%" y2="30%" stroke="#F8D878" strokeWidth="4" strokeDasharray="10 5" />
+                {/* --- PATHS --- */}
+                {/* Path 1 -> 2 */}
+                <line x1="25%" y1="75%" x2="45%" y2="55%" stroke="white" strokeWidth="6" strokeDasharray="10 10" strokeLinecap="round" />
+
+                {/* Path 2 -> 3 */}
+                <line x1="45%" y1="55%" x2="75%" y2="35%" stroke="white" strokeWidth="6" strokeDasharray="10 10" strokeLinecap="round" />
             </svg>
 
-            {/* --- Level Nodes --- */}
+            {/* --- DECORATIVE ELEMENTS (CSS Shapes) --- */}
+            {/* Hill 1 */}
+            <div className="absolute top-[30%] left-[80%] w-32 h-32 bg-[#1C9C1C] rounded-t-full border-4 border-black z-0">
+                <div className="absolute top-4 left-4 w-4 h-8 bg-black opacity-20 rounded-full"></div>
+                <div className="absolute top-8 right-8 w-4 h-4 bg-black opacity-20 rounded-full"></div>
+            </div>
+
+
+            {/* --- LEVEL NODES --- */}
             {levels.map((level) => (
                 <div
                     key={level.id}
-                    className="absolute transform -translate-x-1/2 -translate-y-1/2 cursor-pointer group"
+                    className="absolute transform -translate-x-1/2 -translate-y-1/2 z-10"
                     style={{ left: `${level.x}%`, top: `${level.y}%` }}
                 >
-                    {/* Node Circle */}
-                    <div className={`w-8 h-8 rounded-full border-2 border-black shadow-lg transition-all duration-300
-            ${level.status === "current" ? "bg-red-500 scale-125 animate-bounce-slow" :
-                            level.status === "completed" ? "bg-yellow-400" : "bg-gray-800"
-                        }
-          `}>
-                        {level.status === "current" && (
-                            <div className="absolute inset-0 bg-white opacity-30 rounded-full animate-ping"></div>
-                        )}
+                    {/* The Node Dot */}
+                    <div className={`w-6 h-6 rounded-full border-2 border-white shadow-lg
+                ${level.status === "current" ? "bg-red-500 animate-pulse" :
+                            level.status === "completed" ? "bg-yellow-400" : "bg-black"
+                        }`}>
                     </div>
 
-                    {/* Label Tooltip */}
-                    <div className="absolute top-10 left-1/2 -translate-x-1/2 bg-black/80 text-white text-xs px-2 py-1 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none border border-white">
+                    {/* Level Label */}
+                    <div className="absolute top-8 left-1/2 -translate-x-1/2 bg-white/90 border-2 border-black px-2 py-0.5 rounded text-[10px] whitespace-nowrap font-bold uppercase pointer-events-none">
                         {level.label}
                     </div>
 
-                    {/* --- Avatar (Only on Current Level) --- */}
+                    {/* AVATAR */}
                     {level.status === "current" && (
                         <motion.div
-                            initial={{ y: -20, opacity: 0 }}
-                            animate={{ y: -45, opacity: 1 }}
-                            transition={{ duration: 0.5, type: "spring" }}
-                            className="absolute left-1/2 -translate-x-1/2 w-12 h-12"
+                            initial={{ y: -10 }}
+                            animate={{ y: -25 }}
+                            transition={{ repeat: Infinity, repeatType: "reverse", duration: 0.4 }}
+                            className="absolute -top-4 -left-3"
                         >
-                            {/* Mario CSS Placeholder (or use Image if we had the asset) */}
-                            <div className="w-full h-full relative">
-                                <div className="absolute bottom-0 w-8 h-10 bg-red-600 left-2 rounded-t-lg border border-black shadow-sm"></div>
-                                <div className="absolute -top-1 left-1 w-10 h-4 bg-red-600 rounded-full border border-black z-10"></div>
-                                <div className="absolute top-8 left-0 w-12 h-4 bg-blue-600 rounded-md border border-black"></div>
-                                <div className="text-[8px] font-bold text-white absolute top-10 left-3 drop-shadow-md">YOU</div>
+                            {/* Mario CSS Sprite (Simple) */}
+                            <div className="w-12 h-16 relative scale-75">
+                                {/* Cap */}
+                                <div className="absolute top-0 left-0 w-12 h-4 bg-red-600 rounded-t-lg border-2 border-black"></div>
+                                <div className="absolute top-4 left-2 w-8 h-4 bg-[#FFC0CB] border-l-2 border-r-2 border-black"></div>
+                                <div className="absolute top-4 left-9 w-3 h-2 bg-black rounded-r"></div> {/* Mustache */}
+                                {/* Body */}
+                                <div className="absolute top-8 left-2 w-8 h-6 bg-red-600 border-2 border-black rounded-md z-10"></div>
+                                {/* Overalls */}
+                                <div className="absolute top-10 left-1 w-10 h-6 bg-blue-600 border-2 border-black rounded-b-lg"></div>
                             </div>
                         </motion.div>
                     )}
                 </div>
             ))}
 
-            {/* --- Decorative Elements --- */}
-            <div className="absolute top-4 left-4 bg-yellow-300 border-4 border-black px-4 py-2 rounded-lg shadow-[4px_4px_0px_#000] rotate-[-2deg]">
-                <h2 className="text-xl font-black text-black tracking-tighter" style={{ fontFamily: 'Impact, sans-serif' }}>
-                    WORLD 1
-                </h2>
-                <span className="text-xs font-bold text-red-600 uppercase">Yoshi's Island</span>
+            {/* --- Title Box --- */}
+            <div className="absolute top-4 left-4 bg-white border-2 border-black shadow-[4px_4px_0_rgba(0,0,0,0.5)] px-3 py-1 rounded">
+                <h3 className="font-press-start text-xs text-black">YOSHI'S ISLAND 1</h3>
             </div>
 
         </div>

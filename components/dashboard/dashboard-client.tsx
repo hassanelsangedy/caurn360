@@ -1,38 +1,21 @@
-import { currentUser } from "@clerk/nextjs/server";
-import { redirect } from "next/navigation";
-import { MarioGamification } from "@/components/gamification/mario-level";
-import { OverworldMap } from "@/components/gamification/overworld-map";
+"use client";
+
+import { useLevelTransition, LevelTransition } from "@/components/gamification/level-transition";
 import { GameHUD } from "@/components/gamification/game-hud";
+import { OverworldMap } from "@/components/gamification/overworld-map";
+import { User } from "@clerk/nextjs/server";
 
-export default async function DashboardPage() {
-    const user = await currentUser();
-
-    if (!user) {
-        redirect("/sign-in");
-    }
-
-    // Check role to potentially redirect managers immediately to their dashboard
-    const userRole = (user.publicMetadata.role as string)?.toUpperCase();
-
-    if (userRole === "GESTOR") {
-        redirect("/dashboard/gestor");
-    }
-
+export function DashboardClient({ user }: { user: any }) {
     // Transition State
     const { isTransitioning, startTransition } = useLevelTransition();
 
     const handleStartMission = () => {
         startTransition(() => {
-            // In a real app, this would be router.push('/anamnese')
             console.log("Navigating to mission...");
-            // For now, we simulate navigation or reload to show effect
+            // Simulate navigation
             window.location.href = "/dashboard?mission=started";
         });
     };
-
-    // --- Patient View (Mario World Gamification) ---
-    // In a real app, calculate current level based on assessments completed
-    const currentLevel = 1;
 
     return (
         <div className="min-h-screen bg-[#101010] pb-10">
@@ -44,7 +27,7 @@ export default async function DashboardPage() {
 
             <div className="max-w-5xl mx-auto px-4 space-y-8">
 
-                {/* Intro Text - slightly more game-like */}
+                {/* Intro Text */}
                 <div className="text-center space-y-2 mb-8">
                     <h1 className="text-2xl md:text-3xl text-white font-press-start text-shadow-lg leading-relaxed text-yellow-400"
                         style={{ textShadow: '4px 4px 0 #000' }}>
@@ -59,7 +42,7 @@ export default async function DashboardPage() {
 
                 {/* Action Prompt - Styled as SMW Message Box */}
                 <div className="mt-8 border-4 border-white bg-[#0000AA] rounded-2xl p-6 shadow-[8px_8px_0_#000] relative overflow-hidden">
-                    {/* Corner decorative dots inside border */}
+                    {/* Corner decorative dots */}
                     <div className="absolute top-2 left-2 w-2 h-2 bg-white rounded-full"></div>
                     <div className="absolute top-2 right-2 w-2 h-2 bg-white rounded-full"></div>
                     <div className="absolute bottom-2 left-2 w-2 h-2 bg-white rounded-full"></div>
