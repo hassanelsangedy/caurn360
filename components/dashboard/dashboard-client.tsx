@@ -3,7 +3,6 @@
 import { useLevelTransition, LevelTransition } from "@/components/gamification/level-transition";
 import { GameHUD } from "@/components/gamification/game-hud";
 import { OverworldMap } from "@/components/gamification/overworld-map";
-import { User } from "@clerk/nextjs/server";
 
 export function DashboardClient({ user }: { user: any }) {
     // Transition State
