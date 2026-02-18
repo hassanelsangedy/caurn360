@@ -2,6 +2,7 @@ import { currentUser } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import { MarioGamification } from "@/components/gamification/mario-level";
 import { OverworldMap } from "@/components/gamification/overworld-map";
+import { GameHUD } from "@/components/gamification/game-hud";
 
 export default async function DashboardPage() {
     const user = await currentUser();
@@ -22,28 +23,57 @@ export default async function DashboardPage() {
     const currentLevel = 1;
 
     return (
-        <div className="space-y-8 max-w-5xl mx-auto">
-            <div className="flex flex-col gap-2">
-                <h1 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-white">
-                    Bem-vindo ao CAURN 360º, {user.firstName || "Associado"}!
-                </h1>
-                <p className="text-slate-500 text-lg">
-                    Sua jornada de saúde gamificada começa aqui. Complete as fases para desbloquear benefícios.
-                </p>
-            </div>
+    return (
+        <div className="min-h-screen bg-[#101010] pb-10">
+            {/* Retro HUD */}
+            <GameHUD />
 
-            {/* Gamification Map (Overworld) */}
-            <div className="w-full">
-                <OverworldMap />
-            </div>
+            <div className="max-w-5xl mx-auto px-4 space-y-8">
 
-            {/* Action Prompt */}
-            <div className="mt-8 bg-blue-50 border border-blue-200 rounded-lg p-6">
-                <h2 className="text-xl font-semibold text-blue-800 mb-2">Próxima Missão: Anamnese Inicial</h2>
-                <p className="text-blue-600 mb-4">Complete o formulário inicial para avançar para o Nível 2 e receber sua avaliação de risco.</p>
-                <button className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition-colors">
-                    Começar Agora
-                </button>
+                {/* Intro Text - slightly more game-like */}
+                <div className="text-center space-y-2 mb-8">
+                    <h1 className="text-2xl md:text-3xl text-white font-press-start text-shadow-lg leading-relaxed text-yellow-400"
+                        style={{ textShadow: '4px 4px 0 #000' }}>
+                        WORLD 1: SAÚDE INICIAL
+                    </h1>
+                </div>
+
+                {/* Gamification Map (Overworld) */}
+                <div className="w-full">
+                    <OverworldMap />
+                </div>
+
+                {/* Action Prompt - Styled as SMW Message Box */}
+                <div className="mt-8 border-4 border-white bg-[#0000AA] rounded-2xl p-6 shadow-[8px_8px_0_#000] relative overflow-hidden">
+                    {/* Corner decorative dots inside border */}
+                    <div className="absolute top-2 left-2 w-2 h-2 bg-white rounded-full"></div>
+                    <div className="absolute top-2 right-2 w-2 h-2 bg-white rounded-full"></div>
+                    <div className="absolute bottom-2 left-2 w-2 h-2 bg-white rounded-full"></div>
+                    <div className="absolute bottom-2 right-2 w-2 h-2 bg-white rounded-full"></div>
+
+                    <h2 className="text-lg md:text-xl text-yellow-300 font-press-start mb-4 uppercase tracking-wider relative z-10"
+                        style={{ textShadow: '2px 2px 0 #000' }}>
+                        MESSAGE BLOCK
+                    </h2>
+
+                    <div className="text-white font-mono text-lg md:text-xl font-bold leading-relaxed relative z-10 space-y-4">
+                        <p>
+                            Olá, <span className="text-yellow-300">{user.firstName}</span>! Bem-vindo ao CAURN 360º.
+                        </p>
+                        <p>
+                            Sua jornada começa aqui. Para desbloquear o mapa e acessar novos mundos, você precisa completar a <span className="text-red-300">ANAMNESE INICIAL</span>.
+                        </p>
+                        <p className="animate-pulse mt-4 text-center text-yellow-200">
+                            ▼ PRESS START TO BEGIN ▼
+                        </p>
+                    </div>
+
+                    <div className="mt-6 flex justify-center">
+                        <button className="font-press-start bg-red-600 hover:bg-red-500 text-white py-4 px-8 border-4 border-white rounded shadow-[4px_4px_0_#000] hover:translate-y-1 hover:shadow-none transition-all uppercase text-sm">
+                            Começar Missão
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
     );
