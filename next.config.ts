@@ -16,9 +16,6 @@ const nextConfig: NextConfig = {
     ]
   },
   // Otimização Vercel: remover logs em produção e não falhar build por lint/types (opcional para velocidade)
-  eslint: {
-    ignoreDuringBuilds: true,
-  },
   typescript: {
     ignoreBuildErrors: true,
   },
