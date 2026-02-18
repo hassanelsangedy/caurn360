@@ -1,8 +1,64 @@
 "use client";
 
-import { useLevelTransition, LevelTransition } from "@/components/gamification/level-transition";
+import { useState } from "react";
+import { motion } from "framer-motion";
 import { GameHUD } from "@/components/gamification/game-hud";
 import { OverworldMap } from "@/components/gamification/overworld-map";
+
+// --- Inline Hook & Component due to Vercel Import Issues ---
+
+interface LevelTransitionProps {
+    isTransitioning: boolean;
+    onComplete?: () => void;
+}
+
+function LevelTransition({ isTransitioning, onComplete }: LevelTransitionProps) {
+    if (!isTransitioning) return null;
+
+    return (
+        <div className="fixed inset-0 z-50 flex items-center justify-center pointer-events-none">
+            {/* The Iris Effect using a massive border */}
+            <motion.div
+                initial={{
+                    width: "150vw",
+                    height: "150vw",
+                    borderWidth: "0px"
+                }}
+                animate={{
+                    width: "0px",
+                    height: "0px",
+                    borderWidth: "100vw"
+                }}
+                transition={{
+                    duration: 1.5,
+                    ease: "easeInOut",
+                    times: [0, 1]
+                }}
+                onAnimationComplete={onComplete}
+                className="rounded-full border-black box-content"
+                style={{
+                    borderStyle: "solid",
+                    borderColor: "black",
+                }}
+            />
+        </div>
+    );
+}
+
+function useLevelTransition() {
+    const [isTransitioning, setIsTransitioning] = useState(false);
+
+    const startTransition = (callback?: () => void) => {
+        setIsTransitioning(true);
+        setTimeout(() => {
+            if (callback) callback();
+        }, 1500);
+    };
+
+    return { isTransitioning, startTransition };
+}
+
+// --- Main Component ---
 
 export function DashboardClient({ user }: { user: any }) {
     // Transition State
