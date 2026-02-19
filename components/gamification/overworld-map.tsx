@@ -20,12 +20,44 @@ const levels: LevelNode[] = [
     { id: 5, x: 88, y: 25, status: "locked", label: "BOWSER CASTLE", type: "castle" },
 ];
 
-export function OverworldMap() {
+interface OverworldMapProps {
+    currentWorld?: number;
+    avatarType?: string; // mario, luigi, peach, toadette
+    avatarState?: string; // small, super, fire
+}
+
+export function OverworldMap({ currentWorld = 1, avatarType = "mario", avatarState = "small" }: OverworldMapProps) {
     const [mounted, setMounted] = useState(false);
 
     useEffect(() => {
         setMounted(true);
     }, []);
+
+    // Dynamic level status based on currentWorld
+    const dynamicLevels = levels.map(level => {
+        let status: "locked" | "current" | "completed" = "locked";
+        if (level.id < currentWorld) status = "completed";
+        if (level.id === currentWorld) status = "current";
+        return { ...level, status };
+    });
+
+    // Avatar Styling Helpers
+    const getAvatarColors = () => {
+        switch (avatarType) {
+            case "luigi": return { hat: "bg-green-600", body: "bg-green-600", overalls: "bg-blue-700" };
+            case "peach": return { hat: "bg-pink-400", body: "bg-pink-400", overalls: "bg-fuchsia-600" }; // Dress simul
+            case "toadette": return { hat: "bg-pink-500", body: "bg-pink-500", overalls: "bg-red-500" };
+            default: return { hat: "bg-red-600", body: "bg-red-600", overalls: "bg-blue-600" }; // Mario
+        }
+    };
+
+    const colors = getAvatarColors();
+    const isBig = avatarState !== "small";
+    const isFire = avatarState === "fire";
+
+    // Adjust colors for Fire State (White Hat/Red Overalls usually)
+    const finalColors = isFire ? { hat: "bg-white", body: "bg-white", overalls: "bg-red-600" } : colors;
+
 
     if (!mounted) return <div className="w-full h-[500px] bg-[#5C94FC] rounded-xl animate-pulse" />;
 
@@ -67,9 +99,9 @@ export function OverworldMap() {
 
                 {/* Layer 1: Base Island (Shadow/Cliff bottom) */}
                 <path
-                    d="M -50,600 
-                       L -50,350 
-                       C 50,350 100,380 200,380 
+                    d="M -50,600
+                       L -50,350
+                       C 50,350 100,380 200,380
                        C 350,380 400,450 600,450
                        C 800,450 850,350 950,350
                        L 1050,350
@@ -81,9 +113,9 @@ export function OverworldMap() {
 
                 {/* Layer 2: Grass Top (The Playable Area) - Offset slightly up to show cliff */}
                 <path
-                    d="M -50,580 
-                       L -50,320 
-                       C 50,320 100,350 200,350 
+                    d="M -50,580
+                       L -50,320
+                       C 50,320 100,350 200,350
                        C 350,350 400,420 600,420
                        C 800,420 850,320 950,320
                        L 1050,320
@@ -98,7 +130,7 @@ export function OverworldMap() {
                     d="M 600,350
                        C 650,350 700,300 750,300
                        C 850,300 900,200 1050,200
-                       L 1050,450 
+                       L 1050,450
                        C 900,450 850,420 750,420
                        L 600,420 Z"
                     fill="url(#grassPattern)"
@@ -119,8 +151,8 @@ export function OverworldMap() {
                 {/* 3. PATHS */}
                 {/* Beveled Path style: Outline black, Fill Light Beige */}
                 <path
-                    d="M 150,350 
-                       Q 250,350 350,325 
+                    d="M 150,350
+                       Q 250,350 350,325
                        T 550,225
                        L 800,150"
                     fill="none"
@@ -130,8 +162,8 @@ export function OverworldMap() {
                     className="drop-shadow-sm"
                 />
                 <path
-                    d="M 150,350 
-                       Q 250,350 350,325 
+                    d="M 150,350
+                       Q 250,350 350,325
                        T 550,225
                        L 800,150"
                     fill="none"
@@ -160,7 +192,7 @@ export function OverworldMap() {
 
 
             {/* --- NODES & AVATAR --- */}
-            {levels.map((level) => (
+            {dynamicLevels.map((level) => (
                 <div
                     key={level.id}
                     className="absolute transform -translate-x-1/2 -translate-y-1/2 z-10"
@@ -198,7 +230,7 @@ export function OverworldMap() {
                     )}
 
 
-                    {/* AVATAR (MARIO) */}
+                    {/* AVATAR (DYNAMIC) */}
                     {level.status === "current" && (
                         <motion.div
                             initial={{ y: -10 }}
@@ -206,16 +238,26 @@ export function OverworldMap() {
                             transition={{ repeat: Infinity, repeatType: "reverse", duration: 0.3 }}
                             className="absolute -top-8 left-1/2 -translate-x-1/2"
                         >
-                            <div className="w-8 h-10 relative">
-                                {/* Pixel Art Mario via CSS shadows could be huge, sticking to blocky abstraction */}
+                            <div className={`w-8 relative transition-all duration-300 ${isBig ? "h-12 -top-2" : "h-10"}`}>
+                                {/* Pixel Art Avatar via CSS */}
+
                                 {/* Hat */}
-                                <div className="absolute top-0 w-8 h-3 bg-red-600 rounded-t-sm border border-black"></div>
+                                <div className={`absolute top-0 w-8 rounded-t-sm border border-black ${finalColors.hat} ${isBig ? "h-4" : "h-3"}`}></div>
+
                                 {/* Face */}
-                                <div className="absolute top-3 w-6 left-1 h-3 bg-[#ffcc99] border-l border-r border-black"></div>
+                                <div className={`absolute left-1 w-6 bg-[#ffcc99] border-l border-r border-black ${isBig ? "top-4 h-4" : "top-3 h-3"}`}></div>
+
                                 {/* Body */}
-                                <div className="absolute top-6 w-6 left-1 h-4 bg-blue-600 border border-black z-10"></div>
-                                <div className="absolute top-6 -left-1 w-2 h-4 bg-red-600 rounded-l-full border border-black"></div> {/* Arm L */}
-                                <div className="absolute top-6 -right-1 w-2 h-4 bg-red-600 rounded-r-full border border-black"></div> {/* Arm R */}
+                                <div className={`absolute left-1 w-6 border border-black z-10 ${finalColors.overalls} ${isBig ? "top-8 h-4" : "top-6 h-4"}`}></div>
+
+                                {/* Arms (Color matches body shirt, usually same as hat for Mario/Luigi standard) */}
+                                <div className={`absolute -left-1 w-2 rounded-l-full border border-black ${finalColors.body} ${isBig ? "top-8 h-4" : "top-6 h-4"}`}></div>
+                                <div className={`absolute -right-1 w-2 rounded-r-full border border-black ${finalColors.body} ${isBig ? "top-8 h-4" : "top-6 h-4"}`}></div>
+
+                                {/* Cape (If Fire/Cape state - simulate with yellow back block) */}
+                                {isFire && (
+                                    <div className="absolute top-4 -right-2 w-4 h-6 bg-yellow-400 border border-black -z-10 rotate-12"></div>
+                                )}
                             </div>
                         </motion.div>
                     )}

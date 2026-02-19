@@ -1,14 +1,15 @@
 interface GameHUDProps {
     userName?: string;
+    lives?: number;
+    coins?: number;
+    score?: number;
 }
 
-export function GameHUD({ userName = "MARIO" }: GameHUDProps) {
+export function GameHUD({ userName = "MARIO", lives = 5, coins = 0, score = 0 }: GameHUDProps) {
 
-    // Placeholder data - in real app, fetch from DB
-    const lives = 5;
-    const coins = 0;
-    const score = "000000";
-    const time = "000";
+    // Formatting score to 6 digits
+    const formattedScore = score.toString().padStart(6, '0');
+    const time = "000"; // Time usually static in world map
 
     return (
         <div className="font-['Press_Start_2P'] font-press-start bg-black border-b-4 border-gray-700 p-2 text-white flex justify-between items-start select-none shadow-xl mb-6">
@@ -43,7 +44,7 @@ export function GameHUD({ userName = "MARIO" }: GameHUDProps) {
                     </div>
                     <div className="flex flex-col items-end">
                         <span className="text-[10px] text-gray-400 mb-1">SCORE</span>
-                        <span>{score}</span>
+                        <span>{formattedScore}</span>
                     </div>
                 </div>
             </div>
