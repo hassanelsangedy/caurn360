@@ -19,6 +19,7 @@ model User {
   patientProfile PatientProfile?
   doctorProfile  DoctorProfile?
   managerProfile ManagerProfile?
+  gamification   GamificationProfile?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -124,4 +125,30 @@ enum AssessmentType {
   AMI_FOLLOWUP  // Follow-up
   EVOQUE_CHECK  // Specific Evoque Methodology Check
   OTHER
+}
+
+// Gamification Profile to track user progress in the "game"
+model GamificationProfile {
+  id        String   @id @default(uuid())
+  userId    String   @unique
+  user      User     @relation(fields: [userId], references: [id])
+
+  // Progression
+  currentWorld   Int     @default(1) // 1 to 5
+  levelProgress  Int     @default(0) // 0 to 100% within the world
+  
+  // Resources
+  coins          Int     @default(0)
+  score          Int     @default(0)
+  lives          Int     @default(3)
+
+  // Status Flags (Mission Checkpoints)
+  hasCompletedAnamnesis Boolean @default(false) // World 1 Mission A
+  hasApsConnection      Boolean @default(false) // World 1 Mission B
+  
+  // Inventory / Power-ups
+  powerUps       Json?   // e.g., ["cape", "fire_flower"]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }

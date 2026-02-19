@@ -60,17 +60,32 @@ function useLevelTransition() {
 
 // --- Main Component ---
 
-export function DashboardClient({ user }: { user: any }) {
+interface GameData {
+    world: number;
+    coins: number;
+    score: number;
+    lives: number;
+    missionAnamnesis: boolean;
+    missionAps: boolean;
+    avatarType: string;
+    avatarState: string;
+}
+
+export function DashboardClient({ user, gameData }: { user: any, gameData: GameData }) {
     // Transition State
     const { isTransitioning, startTransition } = useLevelTransition();
 
     const handleStartMission = () => {
-        startTransition(() => {
-            console.log("Navigating to mission...");
-            // Simulate navigation
-            window.location.href = "/dashboard?mission=started";
-        });
+        // Logic to direct user based on missing mission
+        if (!gameData.missionAnamnesis) {
+            // Redirect to Anamnesis form (Simulate for now)
+            console.log("Starting Anamnesis...");
+            startTransition(() => {
+                window.location.href = "/dashboard/anamnese"; // Future route
+            });
+        }
     };
+
 
     return (
         <div className="min-h-screen bg-[#101010] pb-10">
@@ -78,7 +93,12 @@ export function DashboardClient({ user }: { user: any }) {
             <LevelTransition isTransitioning={isTransitioning} />
 
             {/* Retro HUD */}
-            <GameHUD userName={user.firstName} />
+            <GameHUD
+                userName={user.firstName}
+                lives={gameData.lives}
+                coins={gameData.coins}
+                score={gameData.score}
+            />
 
             <div className="max-w-5xl mx-auto px-4 space-y-8">
 
@@ -86,13 +106,17 @@ export function DashboardClient({ user }: { user: any }) {
                 <div className="text-center space-y-2 mb-8">
                     <h1 className="text-2xl md:text-3xl text-white font-press-start text-shadow-lg leading-relaxed text-yellow-400"
                         style={{ textShadow: '4px 4px 0 #000' }}>
-                        WORLD 1: SAÚDE INICIAL
+                        WORLD {gameData.world}: {gameData.world === 1 ? "SAÚDE INICIAL" : "EM BREVE"}
                     </h1>
                 </div>
 
                 {/* Gamification Map (Overworld) */}
                 <div className="w-full">
-                    <OverworldMap />
+                    <OverworldMap
+                        currentWorld={gameData.world}
+                        avatarType={gameData.avatarType}
+                        avatarState={gameData.avatarState}
+                    />
                 </div>
 
                 {/* Action Prompt - Styled as SMW Message Box */}
