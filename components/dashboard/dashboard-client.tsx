@@ -96,6 +96,7 @@ export function DashboardClient({ user }: { user: any }) {
                 </div>
 
                 {/* Action Prompt - Styled as SMW Message Box */}
+                {/* Action Prompt - Styled as SMW Message Box */}
                 <div className="mt-8 border-4 border-white bg-[#0000AA] rounded-2xl p-6 shadow-[8px_8px_0_#000] relative overflow-hidden">
                     {/* Corner decorative dots */}
                     <div className="absolute top-2 left-2 w-2 h-2 bg-white rounded-full"></div>
@@ -103,21 +104,46 @@ export function DashboardClient({ user }: { user: any }) {
                     <div className="absolute bottom-2 left-2 w-2 h-2 bg-white rounded-full"></div>
                     <div className="absolute bottom-2 right-2 w-2 h-2 bg-white rounded-full"></div>
 
-                    <h2 className="text-lg md:text-xl text-yellow-300 font-press-start mb-4 uppercase tracking-wider relative z-10"
-                        style={{ textShadow: '2px 2px 0 #000' }}>
-                        MESSAGE BLOCK
-                    </h2>
+                    <div className="relative z-10">
+                        {/* Header */}
+                        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
+                            <h2 className="text-lg md:text-xl text-yellow-300 font-press-start uppercase tracking-wider"
+                                style={{ textShadow: '2px 2px 0 #000' }}>
+                                🌍 MUNDO 1: YOSHI'S ISLAND
+                            </h2>
+                            <span className="bg-red-600 text-white text-[10px] font-press-start px-2 py-1 rounded border border-white animate-pulse">
+                                MISSÃO ATIVA
+                            </span>
+                        </div>
 
-                    <div className="text-white font-mono text-lg md:text-xl font-bold leading-relaxed relative z-10 space-y-4">
-                        <p>
-                            Olá, <span className="text-yellow-300">{user.firstName}</span>! Bem-vindo ao CAURN 360º.
-                        </p>
-                        <p>
-                            Sua jornada começa aqui. Para desbloquear o mapa e acessar novos mundos, você precisa completar a <span className="text-red-300">ANAMNESE INICIAL</span>.
-                        </p>
-                        <p className="animate-pulse mt-4 text-center text-yellow-200">
-                            ▼ PRESS START TO BEGIN ▼
-                        </p>
+                        {/* Story Content */}
+                        <div className="text-white font-mono text-lg leading-relaxed space-y-6">
+
+                            {/* The Narrative */}
+                            <div className="bg-[#000088] p-4 rounded-lg border-2 border-blue-400/30">
+                                <p className="mb-2">Olá, <span className="text-yellow-300">{user.firstName}</span>!</p>
+                                <p>
+                                    Você acaba de entrar no mapa. O mundo está coberto por uma <span className="text-gray-400">"névoa de incerteza"</span>.
+                                    Para começar sua jornada, você precisa encontrar o seu <strong>Yoshi de Estimação</strong> (Sua Equipe de Saúde Nuclear na APS).
+                                </p>
+                            </div>
+
+                            {/* Mission & Reward Grid */}
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div className="bg-black/40 p-3 rounded border-l-4 border-red-500">
+                                    <h3 className="text-red-300 font-bold mb-1 text-sm uppercase">🎯 A Missão</h3>
+                                    <p className="text-sm">Realizar a Avaliação Global para dissipar a névoa.</p>
+                                </div>
+                                <div className="bg-black/40 p-3 rounded border-l-4 border-yellow-400">
+                                    <h3 className="text-yellow-300 font-bold mb-1 text-sm uppercase">⭐ A Recompensa</h3>
+                                    <p className="text-sm">Seu avatar evolui para <strong>SUPER MARIO</strong> (Barra de vida desbloqueada).</p>
+                                </div>
+                            </div>
+
+                            <p className="text-center text-yellow-200 text-sm mt-4 animate-bounce">
+                                ▼ PRESS START TO BEGIN ▼
+                            </p>
+                        </div>
                     </div>
 
                     <div className="mt-6 flex justify-center">

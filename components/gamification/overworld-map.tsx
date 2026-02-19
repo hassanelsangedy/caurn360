@@ -13,10 +13,11 @@ interface LevelNode {
 }
 
 const levels: LevelNode[] = [
-    { id: 1, x: 15, y: 70, status: "completed", label: "YOSHI'S HOUSE", type: "house" },
-    { id: 2, x: 35, y: 65, status: "current", label: "LEVEL 1", type: "level" },
-    { id: 3, x: 55, y: 45, status: "locked", label: "LAKE", type: "level" },
-    { id: 4, x: 80, y: 30, status: "locked", label: "CASTLE #1", type: "castle" },
+    { id: 1, x: 15, y: 75, status: "current", label: "YOSHI'S ISLAND", type: "house" },
+    { id: 2, x: 32, y: 65, status: "locked", label: "DONUT PLAINS", type: "level" },
+    { id: 3, x: 50, y: 50, status: "locked", label: "VANILLA DOME", type: "level" },
+    { id: 4, x: 70, y: 35, status: "locked", label: "FOREST ILLUSION", type: "level" },
+    { id: 5, x: 88, y: 25, status: "locked", label: "BOWSER CASTLE", type: "castle" },
 ];
 
 export function OverworldMap() {
