@@ -19,17 +19,76 @@ export default async function DashboardPage() {
     }
 
     // Fetch User with Relations
-    const dbUser = await prisma.user.findUnique({
-        where: { clerkId: user.id },
-        include: {
-            gamification: true,
-            patientProfile: true
-        }
-    });
+    let dbUser;
+    try {
+        dbUser = await prisma.user.findUnique({
+            where: { clerkId: user.id },
+            include: {
+                gamification: true,
+                patientProfile: true
+            }
+        });
+    } catch (error: any) {
+        console.error("Database Error:", error);
+        return (
+            <div className="flex flex-col items-center justify-center min-h-[50vh] p-8">
+                <div className="bg-red-50 border border-red-200 rounded-lg p-6 max-w-2xl w-full">
+                    <h2 className="text-lg font-semibold text-red-800 mb-2">Erro ao carregar dados do usuário</h2>
+                    <p className="text-sm text-red-600 mb-4">
+                        Ocorreu um erro ao conectar com o banco de dados. Isso geralmente acontece quando o esquema do banco está desatualizado.
+                    </p>
+                    <div className="bg-slate-900 rounded p-4 overflow-auto max-h-64">
+                        <pre className="text-xs font-mono text-green-400 whitespace-pre-wrap">
+                            {error?.message || JSON.stringify(error, null, 2)}
+                        </pre>
+                    </div>
+                    <p className="mt-4 text-xs text-red-500">
+                        Digest: {error?.digest}
+                    </p>
+                </div>
+            </div>
+        );
+    }
 
     if (!dbUser) {
-        // Should not happen as middleware/sync should handle this, but safe fallback
-        return <div>Erro ao carregar perfil. Tente recarregar.</div>;
+        // Self-healing: Create user if webhook failed
+        console.warn(`User ${user.id} not found in DB. Creating on the fly...`);
+
+        try {
+            const roleMeta = (user.publicMetadata?.role as string)?.toUpperCase();
+            let role: 'ASSOCIADO' | 'MEDICO' | 'GESTOR' = 'ASSOCIADO';
+            if (roleMeta === 'MEDICO') role = 'MEDICO';
+            else if (roleMeta === 'GESTOR') role = 'GESTOR';
+
+            dbUser = await prisma.user.create({
+                data: {
+                    clerkId: user.id,
+                    email: user.emailAddresses[0]?.emailAddress,
+                    name: `${user.firstName || ''} ${user.lastName || ''}`.trim(),
+                    role: role,
+                    gamification: {
+                        create: {
+                            currentWorld: 1,
+                            levelProgress: 0,
+                            lives: 5
+                        }
+                    }
+                },
+                include: {
+                    gamification: true,
+                    patientProfile: true
+                }
+            });
+        } catch (createError: any) {
+            console.error("Failed to auto-create user:", createError);
+            return (
+                <div className="p-8 text-center text-red-500">
+                    Erro crítico ao criar perfil de usuário. Contate o suporte.
+                    <br />
+                    <small>{createError?.message}</small>
+                </div>
+            );
+        }
     }
 
     // Initialize Gamification Profile if deemed missing (though sync should catch it)
