@@ -5,16 +5,18 @@ import { motion } from "framer-motion";
 
 interface LevelNode {
     id: number;
-    x: number; // Percentage from left (0-100)
-    y: number; // Percentage from top (0-100)
+    x: number;
+    y: number;
     status: "locked" | "current" | "completed";
     label: string;
+    type?: "house" | "start" | "castle" | "level";
 }
 
 const levels: LevelNode[] = [
-    { id: 1, x: 25, y: 75, status: "current", label: "House" },     // Yoshi's House vibe
-    { id: 2, x: 45, y: 55, status: "locked", label: "Level 1" },    // First climb
-    { id: 3, x: 75, y: 35, status: "locked", label: "Castle" },     // Castle on hill
+    { id: 1, x: 15, y: 70, status: "completed", label: "YOSHI'S HOUSE", type: "house" },
+    { id: 2, x: 35, y: 65, status: "current", label: "LEVEL 1", type: "level" },
+    { id: 3, x: 55, y: 45, status: "locked", label: "LAKE", type: "level" },
+    { id: 4, x: 80, y: 30, status: "locked", label: "CASTLE #1", type: "castle" },
 ];
 
 export function OverworldMap() {
@@ -27,119 +29,202 @@ export function OverworldMap() {
     if (!mounted) return <div className="w-full h-[500px] bg-[#5C94FC] rounded-xl animate-pulse" />;
 
     return (
-        <div className="relative w-full h-[500px] bg-[#5C94FC] rounded-xl overflow-hidden shadow-2xl border-4 border-yellow-400">
+        <div className="relative w-full h-[500px] bg-[#5C94FC] rounded-xl overflow-hidden shadow-[0_0_0_4px_white,0_0_0_8px_black] font-sans user-select-none">
 
-            {/* --- WATER ANIMATION --- */}
-            <div className="absolute inset-0 opacity-30 bg-[url('https://media.giphy.com/media/3o7aD2dLOma2iWWnF6/giphy.gif')] bg-repeat opacity-20" style={{ backgroundSize: '200px' }}></div>
-
-            {/* --- ISLAND LANDMASS (SVG) --- */}
-            {/* This SVG draws a shape resembling the starting island of SMW */}
-            <svg className="absolute inset-0 w-full h-full" preserveAspectRatio="none">
+            {/* --- SVG MAP LAYER --- */}
+            <svg className="absolute inset-0 w-full h-full" preserveAspectRatio="none" viewBox="0 0 1000 500">
                 <defs>
-                    <pattern id="grassPattern" patternUnits="userSpaceOnUse" width="40" height="40" viewBox="0 0 10 10">
-                        <rect width="10" height="10" fill="#228B22" />
-                        <circle cx="2" cy="2" r="1" fill="#006400" opacity="0.4" />
-                        <circle cx="7" cy="7" r="1" fill="#006400" opacity="0.4" />
+                    {/* Pattern: Water Waves */}
+                    <pattern id="waterPattern" patternUnits="userSpaceOnUse" width="40" height="40" viewBox="0 0 20 20">
+                        <rect width="20" height="20" fill="#4B69D2" /> {/* SMW Blue */}
+                        <path d="M 2,10 L 8,10 M 12,5 L 18,5" stroke="white" strokeWidth="1" opacity="0.4" />
+                    </pattern>
+
+                    {/* Pattern: Grass Texture (Crosshatch) */}
+                    <pattern id="grassPattern" patternUnits="userSpaceOnUse" width="60" height="60" viewBox="0 0 20 20">
+                        <rect width="20" height="20" fill="#3CB300" /> {/* SMW Green */}
+                        <path d="M 0,0 L 2,2 M 10,10 L 12,12" stroke="#2a8000" strokeWidth="2" opacity="0.3" />
+                    </pattern>
+
+                    {/* Pattern: Cliff Face (Stripes) */}
+                    <pattern id="cliffPattern" patternUnits="userSpaceOnUse" width="20" height="20" viewBox="0 0 10 10">
+                        <rect width="10" height="10" fill="#C67C30" /> {/* Brown */}
+                        <path d="M 2,0 L 2,10 M 7,0 L 7,10" stroke="#8B4513" strokeWidth="1.5" />
+                    </pattern>
+
+                    {/* Pattern: Path (Beige Sand) */}
+                    <pattern id="pathPattern" patternUnits="userSpaceOnUse" width="10" height="10">
+                        <rect width="10" height="10" fill="#E8D5B5" />
+                        <circle cx="2" cy="2" r="0.5" fill="#CBB694" />
                     </pattern>
                 </defs>
 
-                {/* The Island Shape */}
+                {/* 1. BACKGROUND WATER */}
+                <rect width="100%" height="100%" fill="url(#waterPattern)" />
+
+                {/* 2. LANDMASS LAYERS */}
+
+                {/* Layer 1: Base Island (Shadow/Cliff bottom) */}
                 <path
-                    d="M -10,500 
-               L -10,400 
-               C 50,400 100,350 150,350 
-               S 250,300 300,300
-               S 400,200 500,200
-               S 700,100 800,100
-               L 1200,100
-               L 1200,500
-               Z"
+                    d="M -50,600 
+                       L -50,350 
+                       C 50,350 100,380 200,380 
+                       C 350,380 400,450 600,450
+                       C 800,450 850,350 950,350
+                       L 1050,350
+                       L 1050,600 Z"
+                    fill="url(#cliffPattern)"
+                    stroke="black"
+                    strokeWidth="3"
+                />
+
+                {/* Layer 2: Grass Top (The Playable Area) - Offset slightly up to show cliff */}
+                <path
+                    d="M -50,580 
+                       L -50,320 
+                       C 50,320 100,350 200,350 
+                       C 350,350 400,420 600,420
+                       C 800,420 850,320 950,320
+                       L 1050,320
+                       L 1050,580 Z"
                     fill="url(#grassPattern)"
-                    stroke="#F8D878"
-                    strokeWidth="8"
-                    className="drop-shadow-xl"
+                    stroke="black"
+                    strokeWidth="3"
                 />
 
-                {/* Outline for the 'cliff' effect */}
+                {/* Layer 3: Upper Hill (Background Plateau) */}
                 <path
-                    d="M -10,500 
-               L -10,400 
-               C 50,400 100,350 150,350 
-               S 250,300 300,300
-               S 400,200 500,200
-               S 700,100 800,100
-               L 1200,100"
-                    fill="none"
-                    stroke="#006400"
-                    strokeWidth="4"
-                    opacity="0.5"
-                    transform="translate(0, 10)"
+                    d="M 600,350
+                       C 650,350 700,300 750,300
+                       C 850,300 900,200 1050,200
+                       L 1050,450 
+                       C 900,450 850,420 750,420
+                       L 600,420 Z"
+                    fill="url(#grassPattern)"
+                    stroke="black"
+                    strokeWidth="3"
+                />
+                {/* Hill Cliff */}
+                <path
+                    d="M 600,420
+                       L 600,440
+                       C 650,440 700,440 750,440
+                       L 1050,440
+                       L 1050,420 Z"
+                    fill="url(#cliffPattern)"
                 />
 
-                {/* --- PATHS --- */}
-                {/* Path 1 -> 2 */}
-                <line x1="25%" y1="75%" x2="45%" y2="55%" stroke="white" strokeWidth="6" strokeDasharray="10 10" strokeLinecap="round" />
 
-                {/* Path 2 -> 3 */}
-                <line x1="45%" y1="55%" x2="75%" y2="35%" stroke="white" strokeWidth="6" strokeDasharray="10 10" strokeLinecap="round" />
+                {/* 3. PATHS */}
+                {/* Beveled Path style: Outline black, Fill Light Beige */}
+                <path
+                    d="M 150,350 
+                       Q 250,350 350,325 
+                       T 550,225
+                       L 800,150"
+                    fill="none"
+                    stroke="black"
+                    strokeWidth="18"
+                    strokeLinecap="round"
+                    className="drop-shadow-sm"
+                />
+                <path
+                    d="M 150,350 
+                       Q 250,350 350,325 
+                       T 550,225
+                       L 800,150"
+                    fill="none"
+                    stroke="#E8D5B5" /* Beige */
+                    strokeWidth="14"
+                    strokeLinecap="round"
+                    strokeDasharray="20 15" /* Dotted path look */
+                />
+
+                {/* Bridge (Logs) over the 'water gap' if we imagined one, keeping simple for now */}
             </svg>
 
-            {/* --- DECORATIVE ELEMENTS (CSS Shapes) --- */}
-            {/* Hill 1 */}
-            <div className="absolute top-[30%] left-[80%] w-32 h-32 bg-[#1C9C1C] rounded-t-full border-4 border-black z-0">
-                <div className="absolute top-4 left-4 w-4 h-8 bg-black opacity-20 rounded-full"></div>
-                <div className="absolute top-8 right-8 w-4 h-4 bg-black opacity-20 rounded-full"></div>
+            {/* --- DECORATIVE SPRITES --- */}
+            {/* Bushes */}
+            <div className="absolute top-[60%] left-[10%] w-12 h-6 bg-[#3CB300] rounded-full border-2 border-black shadow-[2px_2px_0_rgba(0,0,0,0.3)]">
+                <div className="absolute top-1 left-2 w-2 h-2 bg-white/30 rounded-full"></div>
+                <div className="absolute top-2 right-2 w-2 h-2 bg-white/30 rounded-full"></div>
+            </div>
+
+            {/* Hill with Eyes */}
+            <div className="absolute top-[40%] left-[65%] w-24 h-20 bg-[#3CB300] rounded-t-[40px] border-2 border-black z-0 flex justify-center items-center gap-2">
+                {/* Eyes */}
+                <div className="w-2 h-6 bg-black rounded-full"></div>
+                <div className="w-2 h-6 bg-black rounded-full"></div>
             </div>
 
 
-            {/* --- LEVEL NODES --- */}
+            {/* --- NODES & AVATAR --- */}
             {levels.map((level) => (
                 <div
                     key={level.id}
                     className="absolute transform -translate-x-1/2 -translate-y-1/2 z-10"
                     style={{ left: `${level.x}%`, top: `${level.y}%` }}
                 >
-                    {/* The Node Dot */}
-                    <div className={`w-6 h-6 rounded-full border-2 border-white shadow-lg
-                ${level.status === "current" ? "bg-red-500 animate-pulse" :
-                            level.status === "completed" ? "bg-yellow-400" : "bg-black"
-                        }`}>
-                    </div>
+                    {/* Level Node Graphic */}
+                    {/* Yellow Dot for levels, Castle for Castle, House for House */}
+                    {level.type === 'level' && (
+                        <div className={`w-5 h-5 rounded-full border-2 border-black shadow-md
+                            ${level.status === "current" || level.status === "completed" ? "bg-[#F8D878]" : "bg-red-600"}`}>
+                        </div>
+                    )}
 
-                    {/* Level Label */}
-                    <div className="absolute top-8 left-1/2 -translate-x-1/2 bg-white/90 border-2 border-black px-2 py-0.5 rounded text-[10px] whitespace-nowrap font-bold uppercase pointer-events-none">
-                        {level.label}
-                    </div>
+                    {level.type === 'house' && (
+                        <div className="w-12 h-10 bg-[#E8D5B5] border-2 border-black relative rounded-sm shadow-lg">
+                            {/* Roof */}
+                            <div className="absolute -top-4 -left-1 w-14 h-6 bg-red-600 rounded-t-lg border-2 border-black"></div>
+                            {/* Door */}
+                            <div className="absolute bottom-0 left-4 w-4 h-6 bg-black rounded-t"></div>
+                        </div>
+                    )}
 
-                    {/* AVATAR */}
+                    {level.type === 'castle' && (
+                        <div className="relative">
+                            {/* Simple CSS Castle */}
+                            <div className="w-10 h-10 bg-gray-300 border-2 border-black flex flex-col items-center justify-end">
+                                <div className="w-4 h-4 bg-black rounded-t-full mb-0"></div>
+                            </div>
+                            <div className="absolute -top-4 -left-2 w-14 h-4 flex justify-between">
+                                <div className="w-3 h-6 bg-gray-300 border-2 border-black"></div>
+                                <div className="w-3 h-6 bg-gray-300 border-2 border-black"></div>
+                                <div className="w-3 h-6 bg-gray-300 border-2 border-black"></div>
+                            </div>
+                        </div>
+                    )}
+
+
+                    {/* AVATAR (MARIO) */}
                     {level.status === "current" && (
                         <motion.div
                             initial={{ y: -10 }}
                             animate={{ y: -25 }}
-                            transition={{ repeat: Infinity, repeatType: "reverse", duration: 0.4 }}
-                            className="absolute -top-4 -left-3"
+                            transition={{ repeat: Infinity, repeatType: "reverse", duration: 0.3 }}
+                            className="absolute -top-8 left-1/2 -translate-x-1/2"
                         >
-                            {/* Mario CSS Sprite (Simple) */}
-                            <div className="w-12 h-16 relative scale-75">
-                                {/* Cap */}
-                                <div className="absolute top-0 left-0 w-12 h-4 bg-red-600 rounded-t-lg border-2 border-black"></div>
-                                <div className="absolute top-4 left-2 w-8 h-4 bg-[#FFC0CB] border-l-2 border-r-2 border-black"></div>
-                                <div className="absolute top-4 left-9 w-3 h-2 bg-black rounded-r"></div> {/* Mustache */}
+                            <div className="w-8 h-10 relative">
+                                {/* Pixel Art Mario via CSS shadows could be huge, sticking to blocky abstraction */}
+                                {/* Hat */}
+                                <div className="absolute top-0 w-8 h-3 bg-red-600 rounded-t-sm border border-black"></div>
+                                {/* Face */}
+                                <div className="absolute top-3 w-6 left-1 h-3 bg-[#ffcc99] border-l border-r border-black"></div>
                                 {/* Body */}
-                                <div className="absolute top-8 left-2 w-8 h-6 bg-red-600 border-2 border-black rounded-md z-10"></div>
-                                {/* Overalls */}
-                                <div className="absolute top-10 left-1 w-10 h-6 bg-blue-600 border-2 border-black rounded-b-lg"></div>
+                                <div className="absolute top-6 w-6 left-1 h-4 bg-blue-600 border border-black z-10"></div>
+                                <div className="absolute top-6 -left-1 w-2 h-4 bg-red-600 rounded-l-full border border-black"></div> {/* Arm L */}
+                                <div className="absolute top-6 -right-1 w-2 h-4 bg-red-600 rounded-r-full border border-black"></div> {/* Arm R */}
                             </div>
                         </motion.div>
                     )}
+
+                    {/* LABEL */}
+                    <div className="absolute top-8 left-1/2 -translate-x-1/2 bg-black text-white px-2 py-0.5 rounded border border-white text-[8px] font-press-start whitespace-nowrap shadow-md">
+                        {level.label}
+                    </div>
                 </div>
             ))}
-
-            {/* --- Title Box --- */}
-            <div className="absolute top-4 left-4 bg-white border-2 border-black shadow-[4px_4px_0_rgba(0,0,0,0.5)] px-3 py-1 rounded">
-                <h3 className="font-press-start text-xs text-black">YOSHI'S ISLAND 1</h3>
-            </div>
-
         </div>
     );
 }
