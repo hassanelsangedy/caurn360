@@ -1,4 +1,4 @@
-```javascript
+
 import { currentUser } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import DashboardClient from "./dashboard-client"; // Assuming DashboardClient is in the same directory
