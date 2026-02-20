@@ -64,117 +64,34 @@ export function OverworldMap({ currentWorld = 1, avatarType = "mario", avatarSta
     return (
         <div className="relative w-full h-[500px] bg-[#5C94FC] rounded-xl overflow-hidden shadow-[0_0_0_4px_white,0_0_0_8px_black] font-sans user-select-none">
 
-            {/* --- SVG MAP LAYER --- */}
-            <svg className="absolute inset-0 w-full h-full" preserveAspectRatio="none" viewBox="0 0 1000 500">
-                <defs>
-                    {/* Pattern: Water Waves */}
-                    <pattern id="waterPattern" patternUnits="userSpaceOnUse" width="40" height="40" viewBox="0 0 20 20">
-                        <rect width="20" height="20" fill="#4B69D2" /> {/* SMW Blue */}
-                        <path d="M 2,10 L 8,10 M 12,5 L 18,5" stroke="white" strokeWidth="1" opacity="0.4" />
-                    </pattern>
-
-                    {/* Pattern: Grass Texture (Crosshatch) */}
-                    <pattern id="grassPattern" patternUnits="userSpaceOnUse" width="60" height="60" viewBox="0 0 20 20">
-                        <rect width="20" height="20" fill="#3CB300" /> {/* SMW Green */}
-                        <path d="M 0,0 L 2,2 M 10,10 L 12,12" stroke="#2a8000" strokeWidth="2" opacity="0.3" />
-                    </pattern>
-
-                    {/* Pattern: Cliff Face (Stripes) */}
-                    <pattern id="cliffPattern" patternUnits="userSpaceOnUse" width="20" height="20" viewBox="0 0 10 10">
-                        <rect width="10" height="10" fill="#C67C30" /> {/* Brown */}
-                        <path d="M 2,0 L 2,10 M 7,0 L 7,10" stroke="#8B4513" strokeWidth="1.5" />
-                    </pattern>
-
-                    {/* Pattern: Path (Beige Sand) */}
-                    <pattern id="pathPattern" patternUnits="userSpaceOnUse" width="10" height="10">
-                        <rect width="10" height="10" fill="#E8D5B5" />
-                        <circle cx="2" cy="2" r="0.5" fill="#CBB694" />
-                    </pattern>
-                </defs>
-
-                {/* 1. BACKGROUND WATER */}
-                <rect width="100%" height="100%" fill="url(#waterPattern)" />
-
-                {/* 2. LANDMASS LAYERS */}
-
-                {/* Layer 1: Base Island (Shadow/Cliff bottom) */}
-                <path
-                    d="M -50,600
-                       L -50,350
-                       C 50,350 100,380 200,380
-                       C 350,380 400,450 600,450
-                       C 800,450 850,350 950,350
-                       L 1050,350
-                       L 1050,600 Z"
-                    fill="url(#cliffPattern)"
-                    stroke="black"
-                    strokeWidth="3"
+            {/* --- STITCH MAP BACKGROUND --- */}
+            <div className="absolute inset-0 z-0">
+                <Image
+                    src="/assets/gamification/main-map.png"
+                    alt="Main Journey Map"
+                    fill
+                    className="object-cover opacity-90"
+                    priority
                 />
+                {/* Vintage overlay for retro feel */}
+                <div className="absolute inset-0 bg-black/10 mix-blend-overlay pointer-events-none" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent pointer-events-none" />
+            </div>
 
-                {/* Layer 2: Grass Top (The Playable Area) - Offset slightly up to show cliff */}
+            {/* --- SVG OVERLAY FOR PATHS (Retained for structure if logic needs them) --- */}
+            <svg className="absolute inset-0 w-full h-full pointer-events-none z-1" preserveAspectRatio="none" viewBox="0 0 1000 500">
+                {/* Paths can be adjusted to match the Stitch image if needed. 
+                    For now, keep them transparent or subtle to maintain interactivity. */}
                 <path
-                    d="M -50,580
-                       L -50,320
-                       C 50,320 100,350 200,350
-                       C 350,350 400,420 600,420
-                       C 800,420 850,320 950,320
-                       L 1050,320
-                       L 1050,580 Z"
-                    fill="url(#grassPattern)"
-                    stroke="black"
-                    strokeWidth="3"
-                />
-
-                {/* Layer 3: Upper Hill (Background Plateau) */}
-                <path
-                    d="M 600,350
-                       C 650,350 700,300 750,300
-                       C 850,300 900,200 1050,200
-                       L 1050,450
-                       C 900,450 850,420 750,420
-                       L 600,420 Z"
-                    fill="url(#grassPattern)"
-                    stroke="black"
-                    strokeWidth="3"
-                />
-                {/* Hill Cliff */}
-                <path
-                    d="M 600,420
-                       L 600,440
-                       C 650,440 700,440 750,440
-                       L 1050,440
-                       L 1050,420 Z"
-                    fill="url(#cliffPattern)"
-                />
-
-
-                {/* 3. PATHS */}
-                {/* Beveled Path style: Outline black, Fill Light Beige */}
-                <path
-                    d="M 150,350
-                       Q 250,350 350,325
-                       T 550,225
-                       L 800,150"
+                    d="M 150,350 Q 250,350 350,325 T 550,225 L 800,150"
                     fill="none"
-                    stroke="black"
-                    strokeWidth="18"
-                    strokeLinecap="round"
-                    className="drop-shadow-sm"
+                    stroke="white"
+                    strokeWidth="4"
+                    strokeDasharray="8 8"
+                    className="opacity-30 drop-shadow-md"
                 />
-                <path
-                    d="M 150,350
-                       Q 250,350 350,325
-                       T 550,225
-                       L 800,150"
-                    fill="none"
-                    stroke="#E8D5B5" /* Beige */
-                    strokeWidth="14"
-                    strokeLinecap="round"
-                    strokeDasharray="20 15" /* Dotted path look */
-                />
-
-                {/* Bridge (Logs) over the 'water gap' if we imagined one, keeping simple for now */}
             </svg>
+
 
             {/* --- DECORATIVE SPRITES --- */}
             {/* Bushes */}

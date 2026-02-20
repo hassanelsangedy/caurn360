@@ -3,11 +3,15 @@ import Image from 'next/image';
 interface MarioLevelProps {
     level: number;
     status: 'locked' | 'unlocked' | 'completed';
+    backgroundImage?: string;
 }
 
-export function MarioGamification({ level, status }: MarioLevelProps) {
+export function MarioGamification({ level, status, backgroundImage }: MarioLevelProps) {
     const isLocked = status === 'locked';
     const isCompleted = status === 'completed';
+
+    const defaultBg = level === 1 ? "/assets/gamification/level-1.png" : "/assets/gamification/level-2.png";
+    const bgUrl = backgroundImage || defaultBg;
 
     return (
         <div className={`relative w-full h-64 rounded-lg overflow-hidden shadow-xl border-4 transition-all duration-300 group
@@ -16,8 +20,8 @@ export function MarioGamification({ level, status }: MarioLevelProps) {
             {/* Background Image */}
             <div className="absolute inset-0">
                 <Image
-                    src="/assets/gamification/mario-level-bg.png"
-                    alt="Level Environment"
+                    src={bgUrl}
+                    alt={`Level ${level} Environment`}
                     fill
                     className="object-cover"
                     priority={level === 1}
@@ -25,6 +29,7 @@ export function MarioGamification({ level, status }: MarioLevelProps) {
                 {/* Overlay gradient for better text readability */}
                 <div className={`absolute inset-0 ${isLocked ? 'bg-black/60' : 'bg-gradient-to-t from-black/40 to-transparent'}`} />
             </div>
+
 
             <div className="absolute inset-0 flex flex-col items-center justify-center p-4">
 

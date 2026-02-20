@@ -4,6 +4,7 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { GameHUD } from "@/components/gamification/game-hud";
 import { OverworldMap } from "@/components/gamification/overworld-map";
+import { MarioGamification } from "@/components/gamification/mario-level";
 
 // --- Inline Hook & Component due to Vercel Import Issues ---
 
@@ -110,6 +111,7 @@ export function DashboardClient({ user, gameData }: { user: any, gameData: GameD
                     </h1>
                 </div>
 
+
                 {/* Gamification Map (Overworld) */}
                 <div className="w-full">
                     <OverworldMap
@@ -119,7 +121,18 @@ export function DashboardClient({ user, gameData }: { user: any, gameData: GameD
                     />
                 </div>
 
-                {/* Action Prompt - Styled as SMW Message Box */}
+                {/* Level Grid - Phase 1 and Phase 2 */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="space-y-2">
+                        <h2 className="text-sm font-press-start text-blue-400 uppercase ml-2">Fase 1: O Caminho Pradaria</h2>
+                        <MarioGamification level={1} status={gameData.world >= 1 ? 'unlocked' : 'locked'} />
+                    </div>
+                    <div className="space-y-2">
+                        <h2 className="text-sm font-press-start text-green-400 uppercase ml-2">Fase 2: Planície Mistério</h2>
+                        <MarioGamification level={2} status={gameData.world >= 2 ? 'unlocked' : 'locked'} />
+                    </div>
+                </div>
+
                 {/* Action Prompt - Styled as SMW Message Box */}
                 <div className="mt-8 border-4 border-white bg-[#0000AA] rounded-2xl p-6 shadow-[8px_8px_0_#000] relative overflow-hidden">
                     {/* Corner decorative dots */}
@@ -139,6 +152,7 @@ export function DashboardClient({ user, gameData }: { user: any, gameData: GameD
                                 MISSÃO ATIVA
                             </span>
                         </div>
+
 
                         {/* Story Content */}
                         <div className="text-white font-mono text-lg leading-relaxed space-y-6">
