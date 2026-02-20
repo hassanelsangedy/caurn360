@@ -60,10 +60,17 @@ export function OverworldMap({ currentWorld = 1, avatarType = "mario", avatarSta
     const finalColors = isFire ? { hat: "bg-white", body: "bg-white", overalls: "bg-red-600" } : colors;
 
 
-    if (!mounted) return <div className="w-full h-[500px] bg-[#5C94FC] rounded-xl animate-pulse" />;
-
     return (
-        <div className="relative w-full h-[500px] bg-[#5C94FC] rounded-xl overflow-hidden shadow-[0_0_0_4px_white,0_0_0_8px_black] font-sans user-select-none">
+        <div 
+            className={`relative w-full h-[500px] bg-[#5C94FC] rounded-xl overflow-hidden shadow-[0_0_0_4px_white,0_0_0_8px_black] font-sans user-select-none transition-opacity duration-500 ${mounted ? 'opacity-100' : 'opacity-0'}`}
+        >
+            {/* Loading Placeholder (only visible during hydration) */}
+            {!mounted && (
+                <div className="absolute inset-0 bg-[#5C94FC] flex items-center justify-center">
+                    <div className="w-12 h-12 border-4 border-white/30 border-t-white rounded-full animate-spin" />
+                </div>
+            )}
+
 
             {/* --- STITCH MAP BACKGROUND --- */}
             <div className="absolute inset-0 z-0">
