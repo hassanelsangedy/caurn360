@@ -72,15 +72,14 @@ export function OverworldMap({ currentWorld = 1, avatarType = "mario", avatarSta
                     alt="Main Journey Map"
                     fill
                     className="object-cover opacity-90"
-                    priority
                 />
                 {/* Vintage overlay for retro feel */}
                 <div className="absolute inset-0 bg-black/10 mix-blend-overlay pointer-events-none" />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent pointer-events-none" />
             </div>
 
-            {/* --- SVG OVERLAY FOR PATHS (Retained for structure if logic needs them) --- */}
-            <svg className="absolute inset-0 w-full h-full pointer-events-none z-1" preserveAspectRatio="none" viewBox="0 0 1000 500">
+            {/* --- SVG OVERLAY FOR PATHS --- */}
+            <svg className="absolute inset-0 w-full h-full pointer-events-none z-10" preserveAspectRatio="none" viewBox="0 0 1000 500">
                 {/* Paths can be adjusted to match the Stitch image if needed. 
                     For now, keep them transparent or subtle to maintain interactivity. */}
                 <path
